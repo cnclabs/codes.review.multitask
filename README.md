@@ -45,12 +45,12 @@ usage: Training [-h] [--gpu GPU] [--epoch EPOCH] [--batch BATCH]
 Arguments
 
 optional arguments:
-	-h,							--help				show this help message and exit
-	--gpu GPU,					-g GPU				-1=cpu, 0, 1,...= gpt
-	--epoch EPOCH,				-epoch				EPOCH
-	--batch BATCH,				-batch				BATCH batch size
-	--sample_size SAMPLE_SIZE,	-sample				SAMPLE_SIZE
-	--lang LANG,				-lang LANG			en=English, jp=Japanese
-	--task TASK,				-task TASK			reg=Regression, rank=Ranking
-	--train TRAIN,				-train TRAIN		path of training data
+	-h,		--help	show this help message and exit
+	--gpu GPU,	-g GPU	-1=cpu, 0, 1,...= gpt
+	--epoch EPOCH,	-epoch	EPOCH
+	--batch BATCH,	-batch	BATCH batch size
+	--sample_size SAMPLE_SIZE,	-sample	SAMPLE_SIZE
+	--lang LANG,	-lang LANG	en=English, jp=Japanese
+	--task TASK,	-task TASK	reg=Regression, rank=Ranking
+	--train TRAIN,	-train TRAIN	path of training data
 ```
