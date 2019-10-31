@@ -32,6 +32,9 @@ $ pip install -r requirements.txt
 ## 2. Usage
 
 ### 2.1. Train a new model
+```
+$ python train.py
+```
 
 ### 2.2. Get the predicted score for a given movie
 
