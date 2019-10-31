@@ -11,6 +11,16 @@ Consider the scenario in which an investor seeks to iden- tify potential product
 - wikipedia2vec
 
 ### 1.2. Datasets
+We provide two dataset, IMDB and filmark.
+```
+|--data/
+  |--imdb
+  |--filmark
+  |--test.txt
+```
+
+The dataset of IMDB is used for English and the other one is crawled from filmark for Japanese.
+
 ### 1.3. Pretrained Word Embeddings
 There are two pre-trained word embeddins needed. One is for English and the other is for Japanese.
 
