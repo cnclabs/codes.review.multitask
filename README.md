@@ -12,9 +12,9 @@
 ### 1.3. Pretrained Word Embeddings
 There are two pre-trained word embeddins needed. One is for English and the other is for Japanese.
 
--English
+- English
 https://mccormickml.com/2016/04/12/googles-pretrained-word2vec-model-in-python/
--Japanese
+- Japanese
 https://wikipedia2vec.github.io/wikipedia2vec/pretrained/
 
 ### 1.4. Getting Started
