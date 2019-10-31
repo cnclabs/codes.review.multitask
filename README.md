@@ -24,11 +24,6 @@ $ git clone
 $ cd ./
 ```
 
-#### Install python packages
-```
-$ pip install -r requirements.txt
-```
-
 ## 2. Usage
 
 ### 2.1. Train a new model
