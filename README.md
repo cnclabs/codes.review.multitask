@@ -1,5 +1,7 @@
 # A Multi-task Learning Framework with Disposable Auxiliary Networks for Early Prediction of Product Success
 ## 1. Introduction
+Consider the scenario in which an investor seeks to iden- tify potential products before they are unveiled to the public. For such a scenario, the investor may pose questions such as “What characteristic better represents a product?” or “What features make a product popular?” Unlike traditional recom- mendation problems, in this case, there is no user feedback for such upcoming products, which makes associated predic- tion extremely challenging. To address this challenging yet common scenario, in this paper, we present a multi-task learn- ing framework that trains the prediction model on information for mature products that have user feedback, and then uses the model to predict the success of upcoming products with- out any user feedback. To achieve this goal, the framework consists of a main task network to extract product features from their descriptions and a novel disposable auxiliary net- work that learns domain-specific words and popular trends from user reviews at the same time. This disposable auxiliary network is beneficial during the training of the main task net- work, and is unused at the inference stage. Empirical results on two real-world datasets demonstrate that this multi-task learning framework not only significantly improves the over- all rating prediction for products but also effectively identifies the top successful products without any user reviews.
+
 
 ### 1.1. Requirements
 - python3.X
