@@ -111,7 +111,6 @@ def rankNet_data( jsons, sample_size ):
 			labels.append(label)
 			ys.append(y)
 			contents.append(content)
-			contents.append(content)
 			cont_ids.append(input_id)
 			aux1_ids.append(tokenize(j[0][0]))
 			aux2_ids.append(tokenize(j[1][0]))
