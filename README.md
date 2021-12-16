@@ -16,7 +16,7 @@ We provide two dataset, IMDB and filmark.
 |--data/
   |--imdb
   |--filmark
-  |--test.txt
+  |--sample
 ```
 
 The dataset of IMDB is used for English and the other one is crawled from filmark for Japanese.
@@ -28,6 +28,10 @@ There are two pre-trained word embeddins needed. One is for English and the othe
 https://mccormickml.com/2016/04/12/googles-pretrained-word2vec-model-in-python/
 - Japanese
 https://wikipedia2vec.github.io/wikipedia2vec/pretrained/
+#### Download 
+```
+$ bash get_pkl.sh
+```
 
 ### 1.4. Getting Started
 #### Download
