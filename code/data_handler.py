@@ -1,9 +1,16 @@
 import json
 import numpy as np
 import random
+import args
 from itertools import combinations, permutations
+from transformers import BertTokenizer
+from keras.preprocessing.sequence import pad_sequences
 
 wv_model = None
+weight = 'bert-base-cased'
+if args.process_command().lang == 'jp':
+	weight = 'cl-tohoku/bert-base-japanese-whole-word-masking'
+tokenizer = BertTokenizer.from_pretrained(weight)
 
 def set_embedding(embedding):
 	global wv_model
@@ -27,10 +34,55 @@ def loadJSON( JSON ):
 
 	return content, y, aux, aux_rating
 
+def tokenize(raw_content):
+	MAX_LEN = 302
+
+	tokens = tokenizer.tokenize(raw_content)
+	if len(tokens) > 300:
+		tokens = tokens[0:300]
+
+	tokens = ['[CLS]'] + tokens + ['[SEP]']
+	padded_tokens = tokens +['[PAD]' for _ in range(MAX_LEN-len(tokens))]
+
+	attn_mask = [ 1 if token != '[PAD]' else 0 for token in padded_tokens  ]
+	seg_ids = [0 for _ in range(len(padded_tokens))]
+	sent_ids = tokenizer.convert_tokens_to_ids(padded_tokens)
+
+	return [sent_ids, attn_mask, seg_ids]
+			
 def load_data( jsons ):
 	contents, ys, auxs, aux_ratings = zip(*list(map( loadJSON, map(open, jsons) )))
 
-	return contents, ys
+	input_ids = []
+	for i in jsons:
+		raw_content = loadJSON_raw(open(i))
+		input_id = tokenize(raw_content)
+		input_ids.append(input_id)
+
+	return contents, ys, input_ids, input_ids, input_ids, input_ids
+
+def loadJSON_raw( JSON ):
+	_ = json.load(JSON)
+	raw_content = _['description']
+
+	return raw_content
+
+def load_data_concate( jsons, sample_size ):
+	contents = []
+	ys = []
+	input_ids = []
+
+	for i in jsons:
+		content, y, aux, aux_rating  = loadJSON(open(i))
+		raw_content = loadJSON_raw(open(i))
+		ys.append(y)
+		aux_pair_org = list(zip(aux, aux_rating))
+		for j in aux_pair_org[:sample_size]:
+			raw_content = raw_content + j[0]
+		contents.append(wv_model.sentence2vec(raw_content))
+		input_ids.append(tokenize(raw_content))
+
+	return contents, ys, input_ids, input_ids, input_ids, input_ids
 
 def rankNet_data( jsons, sample_size ):
 	contents = []
@@ -38,9 +90,14 @@ def rankNet_data( jsons, sample_size ):
 	aux2 = []
 	ys = []
 	labels = []
+	cont_ids = []
+	aux1_ids = []
+	aux2_ids = []
 
 	for i in jsons:
 		content, y, aux, aux_rating  = loadJSON(open(i))
+		raw_content = loadJSON_raw(open(i))
+		input_id = tokenize(raw_content)
 		
 		aux_pair_org = list(zip(aux, aux_rating))
 		aux_pair_rnd = list(zip(aux, aux_rating))
@@ -54,6 +111,10 @@ def rankNet_data( jsons, sample_size ):
 			labels.append(label)
 			ys.append(y)
 			contents.append(content)
+			contents.append(content)
+			cont_ids.append(input_id)
+			aux1_ids.append(tokenize(j[0][0]))
+			aux2_ids.append(tokenize(j[1][0]))
 
 		'''
 		
@@ -71,26 +132,33 @@ def rankNet_data( jsons, sample_size ):
 			contents.append(content)
 		'''
 
-	return contents, aux1, aux2, ys, labels
+	return contents, aux1, aux2, ys, labels, cont_ids, aux1_ids, aux2_ids
 
 def regression_data( jsons, sample_size ):
 	contents = []
 	aux1 = []
 	ys = []
 	labels = []
+	cont_ids = []
+	aux1_ids = []
 
 	for i in jsons:
 		content, y, aux, aux_rating  = loadJSON(open(i))
 		
 		aux_pair_org = list(zip(aux, aux_rating))
 		
+		raw_content = loadJSON_raw(open(i))
+		input_id = tokenize(raw_content)
+
 		for j in aux_pair_org[:sample_size]:
 			aux1.append(wv_model.sentence2vec(j[0]))
 			labels.append(j[1])
 			ys.append(y)
 			contents.append(content)
+			cont_ids.append(input_id)
+			aux1_ids.append(tokenize(j[0]))
 
-	return contents, aux1, ys, labels
+	return contents, aux1, ys, labels, cont_ids, aux1_ids
 
 def testing_data( data ):
 	content = wv_model.sentence2vec(open(data).read())

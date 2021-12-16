@@ -1,9 +1,59 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import args
 from transformer import MultiHeadAtt as attention
+from transformers import BertModel
 
 embed_size = 300
+weight = 'bert-base-cased'
+if args.process_command().lang == 'jp':
+	weight = 'cl-tohoku/bert-base-japanese-whole-word-masking'
+
+class BERT(nn.Module):
+	
+	def __init__(self, bert_model = BertModel, bert_weight = weight, classes=2):
+		super(BERT, self).__init__()
+		self.loss = nn.MSELoss()
+		self.pretrained = bert_model.from_pretrained(bert_weight)
+
+		for param in self.pretrained.parameters():
+			param.requires_grad = False
+		for param in self.pretrained.encoder.layer[-1].parameters():
+			param.requires_grad = True
+		for param in self.pretrained.encoder.layer[-2].parameters():
+			param.requires_grad = True
+
+		self.dropout = nn.Dropout(p=0.1)
+		self.final = nn.Linear(768, 1)
+
+	def loss_func(self):
+		return self.loss
+
+	def main_task(self, data):
+		ratings = [] 
+		for d in data:
+			token_ids, attn_mask, seg_ids = d
+			token_ids = token_ids.view(1,302)
+			attn_mask = attn_mask.view(1,302)
+			seg_ids = seg_ids.view(1,302)
+			output = self.pretrained(token_ids, attention_mask = attn_mask,token_type_ids = seg_ids)
+			hidden_reps, cls_head = output.last_hidden_state, output.pooler_output
+			cls_head = self.dropout(cls_head)
+			rating = self.final(cls_head)
+			ratings.append(rating)
+
+		ratings = torch.cat(ratings, dim=1)
+
+		return cls_head, ratings[0]
+
+	def forward(self, data , mode='train'):
+		cls_head, y_rating = self.main_task(data[2])
+
+		if mode == 'train':
+			return self.loss(y_rating, data[1])
+		else:
+			return y_rating.view(y_rating.size(0),)
 
 class MLP(nn.Module):
 	def __init__(self):
