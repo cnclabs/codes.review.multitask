@@ -39,14 +39,10 @@ $ cd ./
 ## 2. Usage
 
 ### 2.1. Train a new model
-```
-$ python train.py
-```
-
-### 2.2. Get the predicted score for a given movie
 
 #### Parameters
 ```
+$ cd code
 $ python main.py -h
 usage: Training [-h] [--gpu GPU] [--epoch EPOCH] [--batch BATCH]
                 [--sample_size SAMPLE_SIZE] [--lang LANG] [--task TASK]
