@@ -30,6 +30,7 @@ https://mccormickml.com/2016/04/12/googles-pretrained-word2vec-model-in-python/
 https://wikipedia2vec.github.io/wikipedia2vec/pretrained/
 #### Download 
 ```
+$ cd ./pretrained_embedding
 $ bash get_pkl.sh
 ```
 
