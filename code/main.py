@@ -122,7 +122,7 @@ def torch_data( torch_dataset, batch_size=64):
 def RUN( model_, data_, model_name ):
 	train_loader, valid_loader, test_loader = data_
 
-	print(model_)
+	#print(model_)
 	total = sum(p.numel() for p in model_.parameters() if p.requires_grad)
 	print('# of para: {}'.format(total))	
 	
@@ -138,11 +138,10 @@ def main_process( data, models, path='./'):
 	
 		rmse_mlp = RUN( models.MLP(), data, path+'MLP.pt' )
 		rmse_cnn = RUN( models.CNN(), data, path+'CNN.pt' )
-		rmse_rnn = RUN( models.RNN(), data, path+'RNN.pt' )
 		rmse_att = RUN( models.Att(), data, path+'Att.pt' )
 		rmse_bert = RUN(models.BERT(), data, path+'BERT.pt')
 
-		return rmse_mlp, rmse_cnn, rmse_rnn, rmse_att, rmse_bert
+		return rmse_mlp, rmse_cnn, rmse_att, rmse_bert
 
 	except OSError:
 		print('Create directory failed')
@@ -152,9 +151,8 @@ def print_result( lst1, lst2 ):
 	print('==========')
 	print('{}:\t\t{}\t{}'.format('MLP', lst1[0], lst2[0] ))
 	print('{}:\t\t{}\t{}'.format('CNN', lst1[1], lst2[1] ))
-	print('{}:\t\t{}\t{}'.format('RNN', lst1[2], lst2[2] ))
-	print('{}:\t{}\t{}'.format('self-att', lst1[3], lst2[3] ))
-	print('{}:\t\t{}\t{}'.format('BERT', lst1[4], lst2[4] ))
+	print('{}:\t{}\t{}'.format('self-att', lst1[2], lst2[2] ))
+	print('{}:\t\t{}\t{}'.format('BERT', lst1[3], lst2[3] ))
 
 if __name__ == '__main__':
 	thandler = training_handler.handler(args.process_command())	
