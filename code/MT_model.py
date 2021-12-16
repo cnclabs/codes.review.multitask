@@ -55,7 +55,8 @@ class BERT(nn.Module):
 			token_ids = token_ids.view(1,302)
 			attn_mask = attn_mask.view(1,302)
 			seg_ids = seg_ids.view(1,302)
-			hidden_reps, cls_head_cont = self.pretrained(token_ids)
+			output = self.pretrained(token_ids)
+			hidden_reps, cls_head_cont = output.last_hidden_state, output.pooler_output
 			cls_head_conts.append(cls_head_cont)
 			cls_head_cont = self.dropout(cls_head_cont)
 			rating = self.final(cls_head_cont)
@@ -73,7 +74,8 @@ class BERT(nn.Module):
 				token_ids = token_ids.view(1,302)
 				attn_mask = attn_mask.view(1,302)
 				seg_ids = seg_ids.view(1,302)
-				hidden_reps, cls_head_aux = self.pretrained_aux(token_ids)
+				output = self.pretrained_aux(token_ids)
+				hidden_reps, cls_head_aux = output.last_hidden_state, output.pooler_output
 				cls_head_cat = torch.cat([cls_head_conts[i], cls_head_aux], 1)
 				cls_head_cat = self.dropout_aux(cls_head_cat)
 				rating = self.final_aux(cls_head_cat)
@@ -87,7 +89,8 @@ class BERT(nn.Module):
 				token_ids = token_ids.view(1,302)
 				attn_mask = attn_mask.view(1,302)
 				seg_ids = seg_ids.view(1,302)
-				hidden_reps, cls_head_aux = self.pretrained_aux(token_ids)
+				output = self.pretrained_aux(token_ids)
+				hidden_reps, cls_head_aux = output.last_hidden_state, output.pooler_output
 				cls_head_cat = torch.cat([cls_head_conts[i], cls_head_aux], 1)
 				cls_head_cat = self.dropout_aux(cls_head_cat)	
 				rating = self.final_aux(cls_head_cat)
